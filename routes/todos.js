@@ -17,12 +17,17 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) =>{
   //post a JSON representation of a todo and have it saved. Returns the saved todo item in JSON.
-  //TODO: add body validation
+  //Body Validation
+  req.checkBody('title', 'Title cannot be empty').notEmpty();
+  let errors = req.validationErrors();
+  if(errors) res.status(400).send("Bad request. Try again");
+  //Create new Todo
   let newTodo = {
     title: req.body.title,
     order: Number(req.body.order),
     completed: req.body.completed == 'true'
   }
+  //Save new Todo and send back JSON
   newTodo = await models.todo.create(newTodo)
     .catch( (err) => res.status(500).send("Internal server error!"));
   res.setHeader('Content-Type', 'application/json');
