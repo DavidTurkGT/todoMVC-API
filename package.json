@@ -1,0 +1,29 @@
+{
+  "name": "todomvcapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DavidTurkGT/todoMVC-API.git"
+  },
+  "author": "David Turk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DavidTurkGT/todoMVC-API/issues"
+  },
+  "homepage": "https://github.com/DavidTurkGT/todoMVC-API#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "express-validator": "^3.2.0",
+    "morgan": "^1.8.2",
+    "path": "^0.12.7",
+    "pg": "^6.4.0",
+    "sequelize": "^4.2.1"
+  }
+}
