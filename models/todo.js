@@ -2,7 +2,7 @@
 module.exports = function(sequelize, DataTypes) {
   var todo = sequelize.define('todo', {
     title: DataTypes.STRING,
-    order: DataTypes.NUMBER,
+    order: DataTypes.INTEGER,
     completed: DataTypes.BOOLEAN
   }, {
     classMethods: {
