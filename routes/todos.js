@@ -11,6 +11,13 @@ function validateBody (req, res, next) {
   if(errors) res.status(400).send("Bad request. Try again");
 
   next();
+};
+
+function getKey (req, res, next) {
+  let keys = Object.keys(req.body)
+  if(keys.length !== 1) res.status(400).send("Bad request. Only patch one attribute");
+  req.key = keys[0];
+  next();
 }
 ////////////////////////////////////////////////////////////////////////////////
 router.get('/', async (req, res) => {
@@ -72,9 +79,32 @@ router.put('/:id', validateBody, async (req, res) =>{
   else res.status(404).send("Error: todo not found");
 });
 
-router.patch('/:id', (req, res) =>{
-  //partially update a todo item. Returns the modified todo item.
-  res.send("This will partially update a specific todo item (using ID parameter)");
+router.patch('/:id', getKey, async (req, res) =>{
+  let todo = await models.todo.findById(req.params.id);
+  if(!todo) res.status(404).send("Error. No todo found");
+  switch(req.key){
+    case "title":
+      todo = await todo.updateAttributes({
+        title: req.body.title
+      }).catch( (err) => res.status(500).send("Internal server error"));
+      break;
+    case "order":
+      todo = await todo.updateAttributes({
+        order: req.body.order
+      }).catch( (err) => res.status(500).send("Internal server error"));
+      break;
+    case "completed":
+      todo = await todo.updateAttributes({
+        completed: req.body.completed
+      }).catch( (err) => res.status(500).send("Internal server error"));
+      break;
+    default:
+      res.status(400).send("Bad request. Invalid key");
+      break;
+  }
+  res.setHeader('Content-Type', 'application/json');
+  res.status(200).json(todo);
+
 });
 
 router.delete('/:id', async (req, res) =>{
