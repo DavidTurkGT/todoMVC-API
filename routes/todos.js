@@ -5,9 +5,14 @@ const models    = require('../models');
 router.get('/', (req, res) => {
   //return a JSON array of todo items
   models.todo.findAll().then( (todos) => {
-    console.log("Found this: ", todos);
-    res.send("Check console");
-  });
+    if(todos){
+      res.setHeader('Content-Type', 'application/json');
+      res.status(200).json(todos);
+    }
+    else{
+      res.status(500).send("Internal server error!");
+    }
+  }).catch( (err) => res.status(400).send("Bad request. Try again"));
 });
 
 router.post('/', (req, res) =>{
@@ -20,8 +25,9 @@ router.post('/', (req, res) =>{
   }
   models.todo.create(newTodo).then( (newTodo) => {
     console.log("Todo item created: ", newTodo);
-    res.send("Check console");
-  })
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json(newTodo);
+  }).catch( (err) => res.status(500).send("Internal server error!"))
 });
 
 router.get('/:id', (req, res) =>{
