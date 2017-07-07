@@ -34,9 +34,17 @@ router.post('/', async (req, res) =>{
   res.status(200).json(newTodo);
 });
 
-router.get('/:id', (req, res) =>{
+router.get('/:id', async (req, res) =>{
   //get a specific todo item using the ID parameter
-  res.send("This will return a specific item (using ID parameter)");
+  let todo = await models.todo.findById(req.params.id)
+    .catch( (err) => res.status(500).send("Internal server error"));
+  if(todo){
+    res.setHeader('Content-Type','application/json');
+    res.status(200).json(todo);
+  }
+  else{
+    res.status(404).send("Error: todo not found");
+  }
 });
 
 router.put('/:id', (req, res) =>{
@@ -49,9 +57,20 @@ router.patch('/:id', (req, res) =>{
   res.send("This will partially update a specific todo item (using ID parameter)");
 });
 
-router.delete('/:id', (req, res) =>{
+router.delete('/:id', async (req, res) =>{
   //deletes a todo item. Returns the todo item that was deleted.
-  res.send("This will destroy a specific item (using ID parameter)");
+  let todo = await models.todo.destroy( {
+    where: { id: req.params.id}
+  })
+    .catch( (err) => res.status(500).send("Internal server error"));
+  console.log("Todo item deleted: ", todo);
+  if(todo){
+    res.setHeader('Content-Type','application/json');
+    res.status(200).json(todo);
+  }
+  else{
+    res.status(404).send("Error: todo not found");
+  }
 });
 ////////////////////////////////////////////////////////////////////////////////
 module.exports = router;
